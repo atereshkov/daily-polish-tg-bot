@@ -1,14 +1,27 @@
-import { Telegraf } from 'telegraf';
-import { message } from 'telegraf/filters';
+import { Telegraf, Scenes, session } from 'telegraf';
 import * as dotenv from 'dotenv';
 dotenv.config()
 
+import chooseLanguageScene from './scenes/choose_language_scene.js';
+import wordQuizScene from './scenes/word_quiz_scene.js';
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.start((ctx) => ctx.reply('Welcome'));
-bot.help((ctx) => ctx.reply('Send me a sticker'));
-bot.on(message('sticker'), (ctx) => ctx.reply('👍'));
-bot.hears('hi', (ctx) => ctx.reply('Hey there'));
+const stage = new Scenes.Stage([chooseLanguageScene, wordQuizScene]);
+
+bot.use(session());
+bot.use(stage.middleware());
+
+bot.command("start", ctx => {
+    return ctx.scene.enter('CHOOSE_LANGUAGE_SCENE_ID');
+});
+
+bot.command("language", ctx => {
+    return ctx.scene.enter('CHOOSE_LANGUAGE_SCENE_ID', { direct_command: true });
+});
+
+bot.command('word', (ctx) => ctx.scene.enter('WORD_QUIZ_SCENE_ID'));
+bot.hears('word', (ctx) => ctx.scene.enter('WORD_QUIZ_SCENE_ID'));
 
 bot.launch();
 
