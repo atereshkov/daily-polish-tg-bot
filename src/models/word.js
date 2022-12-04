@@ -1,5 +1,6 @@
 class Word {
-    constructor(original, translationsRu, translationsEn) {
+    constructor(id, original, translationsRu, translationsEn) {
+      this.id = id;
       this.original = original;
       this.translationsRu = translationsRu;
       this.translationsEn = translationsEn;

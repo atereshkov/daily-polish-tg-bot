@@ -2,6 +2,7 @@ import { Scenes, Markup } from 'telegraf';
 
 import Translation from '../models/translation.js';
 import Word from '../models/word.js';
+import * as constants from '../constants.js';
 
 const translationsRu1 = [
     new Translation("Привет", true, 1),
@@ -15,7 +16,7 @@ const translationsEn1 = [
     new Translation("Chest", false, 3),
     new Translation("Czech", false, 4)
 ];
-const word1 = new Word('Cześć', translationsRu1, translationsEn1);
+const word1 = new Word(1, 'Cześć', translationsRu1, translationsEn1);
 
 var wordsArray = [word1];
 
@@ -24,7 +25,7 @@ function getRandomWord() {
     return wordsArray[randomWord];
 }
 
-const wordQuizScene = new Scenes.BaseScene('WORD_QUIZ_SCENE_ID');
+const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
 
 wordQuizScene.enter((ctx) => {
     const word = getRandomWord();
@@ -46,7 +47,7 @@ wordQuizScene.enter((ctx) => {
 });
 
 wordQuizScene.action(/QUIZ_WORD_ACTION_+/, (ctx) => {
-    let translationId = ctx.match.input.substring(17);
+    let translationId = ctx.match.input.substring("QUIZ_WORD_ACTION_".length);
     console.log(translationId);
     console.log(ctx.session.myData.word);
 

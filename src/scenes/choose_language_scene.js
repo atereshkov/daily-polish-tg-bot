@@ -1,37 +1,49 @@
 import { Scenes, Markup } from 'telegraf';
+import * as constants from '../constants.js';
+import * as db from '../database/database.js';
 
-const chooseLanguageScene = new Scenes.BaseScene('CHOOSE_LANGUAGE_SCENE_ID');
+const chooseLanguageScene = new Scenes.BaseScene(constants.SCENE_ID_CHOOSE_LANGUAGE);
 
 chooseLanguageScene.enter((ctx) => {
     ctx.session.myData = {};
-    ctx.reply('What language you prefer?', Markup.inlineKeyboard([
-        Markup.button.callback('English', "ENGLISH_ACTION"),
-        Markup.button.callback('Russian', "RUSSIAN_ACTION"),
+    const msgRu = 'Learn Polish from Russian or English. You could change it anytime.';
+    const msgEn = 'Учи польский с Русского и Английского. Можешь изменить свой выбор позже.';
+    const reply = msgEn + '\n' + msgRu;
+    ctx.reply(reply, Markup.inlineKeyboard([
+        Markup.button.callback('English', "ACTION_LANGUAGE_EN"),
+        Markup.button.callback('Русский', "ACTION_LANGUAGE_RU")
     ]));
 });
 
-chooseLanguageScene.action("ENGLISH_ACTION", (ctx) => {
+chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
+    let languageCode = ctx.match.input.substring("ACTION_LANGUAGE_".length);
     ctx.editMessageReplyMarkup();
-    ctx.editMessageText('Ok, English. Noted. Great!');
-    ctx.session.myData.preferredLanguage = 'English';
+    ctx.editMessageText(`Ok, ${languageCode}. Noted. Great!`);
+    setLanguage(ctx.from.id, languageCode);
     if (ctx.scene.state.direct_command == true) {
         return ctx.scene.leave();
     } else {
-        return ctx.scene.enter('WORD_QUIZ_SCENE_ID');
-    }
-});
-
-chooseLanguageScene.action("RUSSIAN_ACTION", (ctx) => {
-    ctx.editMessageReplyMarkup();
-    ctx.editMessageText('Ok, Russian. Noted. Great!');
-    ctx.session.myData.preferredLanguage = 'Russian';
-    if (ctx.scene.state.direct_command == true) {
-        return ctx.scene.leave();
-    } else {
-        return ctx.scene.enter('WORD_QUIZ_SCENE_ID');
+        return ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ);
     }
 });
 
 chooseLanguageScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose either English or Russian'));
+
+async function setLanguage(tgId, languageCode) {
+    const isUserExists = await db.isUserExists(tgId);
+    if (isUserExists) {
+        try {
+            await db.updateUserLanguage(tgId, languageCode);
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        try {
+            await db.createUser(tgId, languageCode);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+}
 
 export default chooseLanguageScene;
