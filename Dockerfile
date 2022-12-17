@@ -8,6 +8,8 @@ ENV VOLTA_HOME /root/.volta
 ENV PATH /root/.volta/bin:$PATH
 RUN volta install node@${NODE_VERSION}
 
+EXPOSE 80
+
 #######################################################################
 
 RUN mkdir /app
