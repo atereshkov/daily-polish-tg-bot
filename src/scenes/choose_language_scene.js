@@ -42,6 +42,7 @@ async function setLanguage(tgId, languageCode) {
         }
     } else {
         try {
+            await db.createUserAnswers(tgId);
             await db.createUser(tgId, languageCode);
         } catch (error) {
             console.error(error);

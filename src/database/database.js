@@ -36,6 +36,14 @@ export async function isUserExists(tgId) {
 
 // user_answers
 
+export async function createUserAnswers(tgId) {
+    const query = {
+        text: 'INSERT INTO user_answers(tg_id) VALUES($1)',
+        values: [tgId]
+    }
+    return await pool.query(query);
+}
+
 export async function updateUserAnswers(tgId, isRight) {
     const column = isRight ? 'right_answers' : 'wrong_answers';
     const query = {
