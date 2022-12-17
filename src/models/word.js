@@ -1,9 +1,13 @@
 class Word {
-    constructor(id, original, translationsRu, translationsEn) {
+    constructor(id, origin, translations, rightTranslation) {
       this.id = id;
-      this.original = original;
-      this.translationsRu = translationsRu;
-      this.translationsEn = translationsEn;
+      this.origin = origin;
+      this.translations = translations;
+      this.rightTranslation = rightTranslation;
+    }
+
+    isRightTranslation(translation) {
+      return this.rightTranslation == translation;
     }
 }
 
