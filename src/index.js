@@ -27,7 +27,9 @@ bot.hears('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
 
 bot.command('add_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_ADD_WORD));
 
-bot.launch();
+bot
+    .launch({ webhook: { domain: process.env.WEBHOOK_URL, port: process.env.WEBHOOK_PORT }})
+    .then(() => console.log("Webhook bot listening on port", process.env.WEBHOOK_PORT));
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));

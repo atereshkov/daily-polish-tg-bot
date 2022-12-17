@@ -34,9 +34,11 @@ chooseLanguageScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose either E
 
 async function setLanguage(tgId, languageCode) {
     const isUserExists = await db.isUserExists(tgId);
+    console.log(`[setLanguage] ${tgId}, isUserExists: ${isUserExists}`);
     if (isUserExists) {
         try {
             await db.updateUserLanguage(tgId, languageCode);
+            console.log(`[setLanguage] Update user language ${tgId}`);
         } catch (error) {
             console.error(error);
         }
@@ -44,6 +46,7 @@ async function setLanguage(tgId, languageCode) {
         try {
             await db.createUserAnswers(tgId);
             await db.createUser(tgId, languageCode);
+            console.log(`[setLanguage] User created ${tgId}, language: ${languageCode}`);
         } catch (error) {
             console.error(error);
         }
