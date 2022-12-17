@@ -26,24 +26,30 @@ async function getRandomWord() {
     return new Word(word.id, word.origin, sortedTranslations, word.right_translation);
 }
 
-const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
-
-wordQuizScene.enter(async (ctx) => {
+async function showNewWord(ctx) {
     const word = await getRandomWord();
-    
+
     ctx.session.myData = { word: word };
 
     var buttons = [];
     for (let i = 0; i < word.translations.length; i++) {
         const id = word.translations[i].id;
-        buttons.push(Markup.button.callback(word.translations[i].value, `QUIZ_WORD_ACTION_${id}`));
+        if (word.translations[i].value != null) {
+            buttons.push(Markup.button.callback(`${word.translations[i].value}`, `QUIZ_WORD_ACTION_${id}`));
+        }
     }
 
     analytics.trackWordQuizShowed(ctx.from.id, word.origin);
-    ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
+    return ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
+}
+
+const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
+
+wordQuizScene.enter(async (ctx) => {
+    return showNewWord(ctx);
 });
 
-wordQuizScene.action(/QUIZ_WORD_ACTION_+/, (ctx) => {
+wordQuizScene.action(/QUIZ_WORD_ACTION_+/, async (ctx) => {
     let translationId = ctx.match.input.substring("QUIZ_WORD_ACTION_".length);
     const translation = ctx.session.myData.word.translations.find(x => x.id == translationId);
     const isRight = ctx.session.myData.word.isRightTranslation(translation.value);
@@ -52,19 +58,25 @@ wordQuizScene.action(/QUIZ_WORD_ACTION_+/, (ctx) => {
     if (isRight) {
         answer = ctx.session.myData.word.origin + '\n' + translation.value + ' ✅';
     } else {
-        // const rightTranslation = ctx.session.myData.word.translationsRu.find(x => x.result == true);
         answer = ctx.session.myData.word.origin + '\n' + translation.value + ' ❌';
+        answer += '\nПравильный перевод: ' + ctx.session.myData.word.rightTranslation;
     }
-
-    ctx.editMessageReplyMarkup();
-    ctx.editMessageText(answer, {
-        parse_mode: "HTML"
-    });
 
     db.updateUserAnswers(ctx.from.id, isRight);
     analytics.trackWordQuizAnswered(ctx.from.id, isRight, ctx.session.myData.word.origin);
 
-    return ctx.scene.leave();
+    await ctx.editMessageText(answer, {
+        parse_mode: "HTML"
+    });
+    return ctx.editMessageReplyMarkup({
+        inline_keyboard: [
+            [Markup.button.callback('Новое слово', "QUIZ_GET_NEW_WORD")],
+        ]
+    });
+});
+
+wordQuizScene.action("QUIZ_GET_NEW_WORD", async (ctx) => {
+    return showNewWord(ctx);
 });
 
 wordQuizScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose a word'));

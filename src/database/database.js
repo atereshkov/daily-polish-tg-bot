@@ -49,7 +49,8 @@ export async function updateUserAnswers(tgId, isRight) {
 
 export async function getRandomWord() {
     const query = {
-        text: `SELECT * FROM words_ru TABLESAMPLE SYSTEM_ROWS(1)`,
+        // text: `SELECT * FROM words_ru TABLESAMPLE SYSTEM_ROWS(1)`, // for larget datasets (https://www.postgresql.org/docs/current/tsm-system-rows.html)
+        text: `SELECT * FROM words_ru ORDER BY RANDOM() LIMIT 1`, // for small datasets
         values: []
     }
     return await pool.query(query);
