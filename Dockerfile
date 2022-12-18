@@ -8,8 +8,6 @@ ENV VOLTA_HOME /root/.volta
 ENV PATH /root/.volta/bin:$PATH
 RUN volta install node@${NODE_VERSION}
 
-EXPOSE 80
-
 #######################################################################
 
 RUN mkdir /app
@@ -34,5 +32,7 @@ COPY --from=builder /app /app
 WORKDIR /app
 ENV NODE_ENV production
 ENV PATH /root/.volta/bin:$PATH
+
+EXPOSE 80
 
 CMD [ "npm", "run", "start" ]
