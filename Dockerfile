@@ -33,6 +33,4 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV PATH /root/.volta/bin:$PATH
 
-EXPOSE 8080
-
 CMD [ "npm", "run", "start" ]
