@@ -11,7 +11,7 @@ chooseLanguageScene.enter((ctx) => {
     // const msgEn = 'Учи польский с Русского и Английского. Можешь изменить свой выбор позже.';
     // const reply = msgEn + '\n' + msgRu;
     const reply = 'Выберите язык, чтобы начать.\nWe are going to support more languages soon.';
-    ctx.reply(reply, Markup.inlineKeyboard([
+    return ctx.reply(reply, Markup.inlineKeyboard([
         // Markup.button.callback('English', "ACTION_LANGUAGE_EN"),
         Markup.button.callback('Русский', "ACTION_LANGUAGE_RU")
     ]));
@@ -19,9 +19,9 @@ chooseLanguageScene.enter((ctx) => {
 
 chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
     let languageCode = ctx.match.input.substring("ACTION_LANGUAGE_".length);
-    ctx.editMessageReplyMarkup();
-    ctx.editMessageText(`Ok, ${languageCode}. Noted. Great!`);
-    setLanguage(ctx.from.id, languageCode);
+    await ctx.editMessageReplyMarkup();
+    await ctx.editMessageText(`Ok, ${languageCode}. Noted. Great!`);
+    await setLanguage(ctx.from.id, languageCode);
     analytics.trackLanguageSelected(ctx.from.id, languageCode);
     if (ctx.scene.state.direct_command == true) {
         return ctx.scene.leave();

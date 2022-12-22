@@ -6,7 +6,7 @@ import * as analytics from '../analytics/analytics.js';
 
 const addWordScene = new Scenes.WizardScene(
     constants.SCENE_ID_ADD_WORD,
-    (ctx) => {
+    async (ctx) => {
         const reply = ""
             'Enter a word, translations and right translation. Everything should start from a capital letter\n\n'
             'Example:\n'
@@ -14,7 +14,7 @@ const addWordScene = new Scenes.WizardScene(
             'Аэропорт, Лётчик, Лотерея, Лот\n'
             'Аэропорт'
         "";
-        ctx.reply('Enter a word, translations and right translation. Everything should start from a capital letter');
+        await ctx.reply('Enter a word, translations and right translation. Everything should start from a capital letter');
         ctx.wizard.state.word = {};
         return ctx.wizard.next();
     },
@@ -32,7 +32,7 @@ const addWordScene = new Scenes.WizardScene(
         ctx.wizard.state.word.origin = word;
         
         if (translations.count <= 2 || translations.count > 4) {
-            ctx.reply('Enter translations separated with , (min 2 and max 4)');
+            await ctx.reply('Enter translations separated with , (min 2 and max 4)');
             return;
         }
         ctx.wizard.state.word.translations = translations;
@@ -46,10 +46,10 @@ const addWordScene = new Scenes.WizardScene(
         try {
             await db.saveWord(ctx.wizard.state.word);
             analytics.trackWordAdded(ctx.from.id, ctx.wizard.state.word.origin);
-            ctx.reply('Thank you for adding a new word!');
+            await ctx.reply('Thank you for adding a new word!');
         } catch (error) {
             console.log(error);
-            ctx.reply(`Error occurred: ${error.detail}`);
+            await ctx.reply(`Error occurred: ${error.detail}`);
         }
         return ctx.scene.leave();
     }

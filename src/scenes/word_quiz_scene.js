@@ -40,7 +40,7 @@ async function showNewWord(ctx) {
     }
 
     analytics.trackWordQuizShowed(ctx.from.id, word.origin);
-    ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
+    return ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
 }
 
 const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
