@@ -31,7 +31,7 @@ bot.command("language", ctx => {
 bot.command('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
 bot.hears('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
 
-// bot.command('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_STATS));
+// bot.command('stats', (ctx) => ctx.scene.enter(constants.SCENE_ID_STATS));
 
 bot.command('add_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_ADD_WORD));
 
