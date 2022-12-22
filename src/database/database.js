@@ -26,15 +26,23 @@ export async function updateUserLanguage(tgId, languageCode) {
     return await pool.query(query);
 }
 
-export async function isUserExists(tgId) {
+export async function getUser(tgId) {
     const query = {
-        text: 'SELECT EXISTS(SELECT 1 FROM users WHERE tg_id = $1)',
+        text: 'SELECT * FROM users WHERE tg_id = $1',
         values: [tgId]
     }
     return await pool.query(query);
 }
 
 // user_answers
+
+export async function getUserAnswers(tgId) {
+    const query = {
+        text: 'SELECT * FROM user_answers WHERE tg_id = $1',
+        values: [tgId]
+    }
+    return await pool.query(query);
+}
 
 export async function createUserAnswers(tgId) {
     const query = {

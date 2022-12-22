@@ -40,7 +40,7 @@ async function showNewWord(ctx) {
     }
 
     analytics.trackWordQuizShowed(ctx.from.id, word.origin);
-    return ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
+    ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
 }
 
 const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
@@ -68,7 +68,7 @@ wordQuizScene.action(/QUIZ_WORD_ACTION_+/, async (ctx) => {
     await ctx.editMessageText(answer, {
         parse_mode: "HTML"
     });
-    return ctx.editMessageReplyMarkup({
+    await ctx.editMessageReplyMarkup({
         inline_keyboard: [
             [Markup.button.callback('Новое слово', "QUIZ_GET_NEW_WORD")],
         ]
@@ -79,6 +79,6 @@ wordQuizScene.action("QUIZ_GET_NEW_WORD", async (ctx) => {
     return showNewWord(ctx);
 });
 
-wordQuizScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose a word'));
+// wordQuizScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose a word'));
 
 export default wordQuizScene;

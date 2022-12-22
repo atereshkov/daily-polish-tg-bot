@@ -10,7 +10,7 @@ chooseLanguageScene.enter((ctx) => {
     // const msgRu = 'Learn Polish from Russian or English. You could change it anytime.';
     // const msgEn = 'Учи польский с Русского и Английского. Можешь изменить свой выбор позже.';
     // const reply = msgEn + '\n' + msgRu;
-    const reply = 'Выберите язык, чтобы начать.\n We are going to support more languages soon.';
+    const reply = 'Выберите язык, чтобы начать.\nWe are going to support more languages soon.';
     ctx.reply(reply, Markup.inlineKeyboard([
         // Markup.button.callback('English', "ACTION_LANGUAGE_EN"),
         Markup.button.callback('Русский', "ACTION_LANGUAGE_RU")
@@ -30,12 +30,12 @@ chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
     }
 });
 
-chooseLanguageScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose either English or Russian'));
+chooseLanguageScene.use((ctx) => ctx.replyWithMarkdownV2('Пожалуйста, выберите язык'));
 
 async function setLanguage(tgId, languageCode) {
-    const isUserExists = await db.isUserExists(tgId);
-    console.log(`[setLanguage] ${tgId}, isUserExists: ${isUserExists}`);
-    if (isUserExists) {
+    const getUser = await db.getUser(tgId);
+    const user = getUser.rows[0];
+    if (user) {
         try {
             await db.updateUserLanguage(tgId, languageCode);
             console.log(`[setLanguage] Update user language ${tgId}`);
@@ -44,7 +44,11 @@ async function setLanguage(tgId, languageCode) {
         }
     } else {
         try {
-            await db.createUserAnswers(tgId);
+            const getUserAnswers = await db.getUserAnswers(tgId);
+            const userAnswers = getUserAnswers.rows[0];
+            if (!userAnswers) {
+                await db.createUserAnswers(tgId);
+            }
             await db.createUser(tgId, languageCode);
             console.log(`[setLanguage] User created ${tgId}, language: ${languageCode}`);
         } catch (error) {
