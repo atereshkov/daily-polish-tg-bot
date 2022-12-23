@@ -1,4 +1,4 @@
-# fly.toml file generated for daily-polish-tg-bot on 2022-12-17T11:16:58+01:00
+# fly.toml file generated for daily-polish-tg-bot on 2022-12-22T20:57:23+01:00
 
 app = "daily-polish-tg-bot"
 kill_signal = "SIGINT"

@@ -1,4 +1,5 @@
 import { Telegraf, Scenes, session } from 'telegraf';
+import express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config()
 
@@ -14,6 +15,8 @@ if (process.env.NODE_ENV === "production") {
 } else {
     bot = new Telegraf(process.env.TEST_BOT_TOKEN);
 }
+
+const app = express();
 
 const stage = new Scenes.Stage([chooseLanguageScene, wordQuizScene, addWordScene]);
 
@@ -36,9 +39,9 @@ bot.hears('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
 bot.command('add_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_ADD_WORD));
 
 if (process.env.NODE_ENV === "production") {
-    bot.launch();
-        // .launch({ webhook: { domain: process.env.WEBHOOK_URL, port: process.env.WEBHOOK_PORT }})
-        // .then(() => console.log("Webhook bot listening on port", process.env.WEBHOOK_PORT));
+    app.use(express.json());
+    app.use(await bot.createWebhook({ domain: process.env.WEBHOOK_URL }));
+    app.listen(process.env.WEBHOOK_PORT, '0.0.0.0', () => console.log("Listening on port", process.env.WEBHOOK_PORT));
 } else {
     bot.launch();
 }

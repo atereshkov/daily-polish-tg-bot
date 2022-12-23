@@ -22,7 +22,7 @@ const addWordScene = new Scenes.WizardScene(
         const array = ctx.message.text.split('\n');
         // if (ctx.message.text.length <= 1) {
         if (array.length < 3) {
-            ctx.reply('Incorrect format. Make sure you have entered each part separately as a new line');
+            await ctx.reply('Incorrect format. Make sure you have entered each part separately as a new line');
             return;
         }
         const word = array[0];
@@ -38,7 +38,7 @@ const addWordScene = new Scenes.WizardScene(
         ctx.wizard.state.word.translations = translations;
 
         if (!translations.includes(rightTranslation)) {
-            ctx.reply('Please enter right translation');
+            await ctx.reply('Please enter right translation');
             return;
         }
         ctx.wizard.state.word.rightTranslation = rightTranslation;
