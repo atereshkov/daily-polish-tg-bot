@@ -6,6 +6,7 @@ dotenv.config()
 import chooseLanguageScene from './scenes/choose_language_scene.js';
 import wordQuizScene from './scenes/word_quiz_scene.js';
 import addWordScene from './scenes/add_word_scene.js';
+import userStatsScene from './scenes/user_stats_scene.js';
 import * as constants from './constants.js';
 
 let bot;
@@ -18,7 +19,12 @@ if (process.env.NODE_ENV === "production") {
 
 const app = express();
 
-const stage = new Scenes.Stage([chooseLanguageScene, wordQuizScene, addWordScene]);
+const stage = new Scenes.Stage([
+    chooseLanguageScene,
+    wordQuizScene,
+    addWordScene,
+    userStatsScene
+]);
 
 bot.use(session());
 bot.use(stage.middleware());
@@ -34,7 +40,7 @@ bot.command("language", ctx => {
 bot.command('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
 bot.hears('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
 
-// bot.command('stats', (ctx) => ctx.scene.enter(constants.SCENE_ID_STATS));
+bot.command('stats', (ctx) => ctx.scene.enter(constants.SCENE_ID_USER_STATS));
 
 bot.command('add_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_ADD_WORD));
 

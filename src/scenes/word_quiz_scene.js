@@ -79,6 +79,11 @@ wordQuizScene.action("QUIZ_GET_NEW_WORD", async (ctx) => {
     return showNewWord(ctx);
 });
 
+wordQuizScene.command("cancel", async (ctx) => {
+    await ctx.reply('Текущая операция закончена.');
+    return ctx.scene.leave();
+});
+
 // wordQuizScene.use((ctx) => ctx.replyWithMarkdownV2('Please choose a word'));
 
 export default wordQuizScene;
