@@ -7,13 +7,7 @@ import * as analytics from '../analytics/analytics.js';
 const addWordScene = new Scenes.WizardScene(
     constants.SCENE_ID_ADD_WORD,
     async (ctx) => {
-        const reply = ""
-            'Введите слово, переводы (до 4-ех) и правильный перевод. Всё должно начинаться с большой буквы.\n\n'
-            'Пример:\n'
-            'Lotnisko\n'
-            'Аэропорт, Лётчик, Лотерея, Лот\n'
-            'Аэропорт'
-        "";
+        const reply = 'Введите слово, переводы (до 4-ех) и правильный перевод. Всё должно начинаться с большой буквы.\n\nПример:\nLotnisko\nАэропорт, Лётчик, Лотерея, Лот\nАэропорт'
         await ctx.reply(reply);
         ctx.wizard.state.word = {};
         return ctx.wizard.next();
