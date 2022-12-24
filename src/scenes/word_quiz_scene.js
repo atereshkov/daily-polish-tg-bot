@@ -4,14 +4,16 @@ import Word from '../models/word.js';
 import * as constants from '../constants.js';
 import * as db from '../database/database.js';
 import * as analytics from '../analytics/analytics.js';
+import log from '../logger/logger.js';
 
 async function getRandomWord() {
     var word;
     try {
         const res = await db.getRandomWord();
         word = res.rows[0];
-    } catch (err) {
-        console.log(err.stack);
+        log.debug(`Generate random word ${word}`);
+    } catch (error) {
+        log.error(error);
     }
 
     var sortedTranslations = [word.translation1, word.translation2, word.translation3, word.translation4]
@@ -46,10 +48,12 @@ async function showNewWord(ctx) {
 const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
 
 wordQuizScene.enter(async (ctx) => {
+    log.info(`Entered scene ${constants.SCENE_ID_USER_STATS}`);
     return showNewWord(ctx);
 });
 
 wordQuizScene.action(/QUIZ_WORD_ACTION_+/, async (ctx) => {
+    log.debug(`Word answer action ${ctx.match.input}`);
     let translationId = ctx.match.input.substring("QUIZ_WORD_ACTION_".length);
     const translation = ctx.session.myData.word.translations.find(x => x.id == translationId);
     const isRight = ctx.session.myData.word.isRightTranslation(translation.value);
@@ -80,6 +84,7 @@ wordQuizScene.action("QUIZ_GET_NEW_WORD", async (ctx) => {
 });
 
 wordQuizScene.command("cancel", async (ctx) => {
+    log.info('Cancelled current command');
     await ctx.reply('Текущая операция закончена.');
     return ctx.scene.leave();
 });

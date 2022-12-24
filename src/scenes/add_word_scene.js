@@ -3,16 +3,19 @@ import { Scenes } from 'telegraf';
 import * as constants from '../constants.js';
 import * as db from '../database/database.js';
 import * as analytics from '../analytics/analytics.js';
+import log from '../logger/logger.js';
 
 const addWordScene = new Scenes.WizardScene(
     constants.SCENE_ID_ADD_WORD,
     async (ctx) => {
+        log.info(`Entered scene ${constants.SCENE_ID_ADD_WORD}`);
         const reply = 'Введите слово, переводы (до 4-ех) и правильный перевод. Слова с большой буквы. Разделяйте варианты переводов запятой.\n\nПример:\nLotnisko\nАэропорт, Лётчик, Лотерея, Лот\nАэропорт'
         await ctx.reply(reply);
         ctx.wizard.state.word = {};
         return ctx.wizard.next();
     },
     async (ctx) => {
+        log.debug(`Received ${ctx.message.text}`);
         const array = ctx.message.text.split('\n');
         if (array.length < 3) {
             await ctx.reply('Неверный формат. Убедитесь, что слово, варианты и правильный перевод введены с новой строки');
@@ -46,12 +49,9 @@ const addWordScene = new Scenes.WizardScene(
                 await db.saveWord(ctx.wizard.state.word, ctx.from.id);
                 await db.updateUserWordsStats(ctx.from.id);
                 await ctx.reply('Спасибо за добавление слова 💕\n\nИспользуйте команду /add_word для добавления новых слов.');
-                if (ctx.from.id == 732811928) {
-                    await ctx.reply('Привет Котис');
-                }
             }
         } catch (error) {
-            console.log(error);
+            logger.error(error);
             await ctx.reply('Произошла ошибка. Попробуйте ещё раз');
         }
         return ctx.scene.leave();

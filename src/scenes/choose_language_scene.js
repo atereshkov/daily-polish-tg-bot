@@ -2,10 +2,12 @@ import { Scenes, Markup } from 'telegraf';
 import * as constants from '../constants.js';
 import * as db from '../database/database.js';
 import * as analytics from '../analytics/analytics.js';
+import log from '../logger/logger.js';
 
 const chooseLanguageScene = new Scenes.BaseScene(constants.SCENE_ID_CHOOSE_LANGUAGE);
 
 chooseLanguageScene.enter((ctx) => {
+    log.info(`Entered scene ${constants.SCENE_ID_CHOOSE_LANGUAGE}`);
     ctx.session.myData = {};
     // const msgRu = 'Learn Polish from Russian or English. You could change it anytime.';
     // const msgEn = 'Учи польский с Русского и Английского. Можешь изменить свой выбор позже.';
@@ -18,6 +20,7 @@ chooseLanguageScene.enter((ctx) => {
 });
 
 chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
+    log.debug(`Language action ${ctx.match.input}, direct: ${ctx.scene.state.direct_command}`);
     let languageCode = ctx.match.input.substring("ACTION_LANGUAGE_".length);
     await ctx.editMessageReplyMarkup();
     await ctx.editMessageText(`Ok, ${languageCode}. Noted. Great!`);
@@ -32,6 +35,7 @@ chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
 // chooseLanguageScene.use((ctx) => ctx.replyWithMarkdownV2('Пожалуйста, выберите язык'));
 
 chooseLanguageScene.command("cancel", async (ctx) => {
+    log.info('Cancelled current command');
     await ctx.reply('Текущая операция закончена.');
     return ctx.scene.leave();
 });
@@ -42,23 +46,25 @@ async function setLanguage(tgId, languageCode) {
     if (user) {
         try {
             await db.updateUserLanguage(tgId, languageCode);
-            analytics.trackLanguageSelected(ctx.from.id, languageCode);
-            console.log(`[setLanguage] Update user language ${tgId}`);
+            analytics.trackLanguageSelected(tgId, languageCode);
+            log.info(`Update user language ${tgId}, value: ${languageCode}`);
         } catch (error) {
-            console.error(error);
+            log.error(error);
         }
     } else {
         try {
             const getUserStats = await db.getUserStats(tgId);
             const userStats = getUserStats.rows[0];
             if (!userStats) {
+                log.info(`Creating user stats for ${tgId}`);
                 await db.createUserStats(tgId);
             }
+            log.info(`Creating user ${tgId}`);
             await db.createUser(tgId, languageCode);
-            analytics.trackUserCreated(ctx.from.id, languageCode);
-            console.log(`[setLanguage] User created ${tgId}, language: ${languageCode}`);
+            analytics.trackUserCreated(tgId, languageCode);
+            log.info(`User created ${tgId}, language: ${languageCode}`);
         } catch (error) {
-            console.error(error);
+            log.error(error);
         }
     }
 }

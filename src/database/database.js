@@ -100,6 +100,14 @@ export async function getRandomWord() {
     return await pool.query(query);
 }
 
+export async function getRandomUserWord(tgId) {
+    const query = {
+        text: `SELECT * FROM words_ru WHERE owner_tg_id = $1 ORDER BY RANDOM() LIMIT 1`,
+        values: [tgId]
+    }
+    return await pool.query(query);
+}
+
 export async function saveWord(word, tgId) {
     const translation1 = word.translations[0];
     const translation2 = word.translations[1];
