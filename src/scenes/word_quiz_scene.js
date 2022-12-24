@@ -48,7 +48,7 @@ async function showNewWord(ctx) {
 const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
 
 wordQuizScene.enter(async (ctx) => {
-    log.info(`Entered scene ${constants.SCENE_ID_USER_STATS}`);
+    log.info(`Entered scene ${constants.SCENE_ID_WORD_QUIZ}`);
     return showNewWord(ctx);
 });
 
