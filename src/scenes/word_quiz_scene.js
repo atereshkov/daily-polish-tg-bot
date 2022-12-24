@@ -11,7 +11,7 @@ async function getRandomWord() {
     try {
         const res = await db.getRandomWord();
         word = res.rows[0];
-        log.debug(`Generate random word ${word}`);
+        log.debug(`Generate random word ${word.origin}`);
     } catch (error) {
         log.error(error);
     }

@@ -23,9 +23,12 @@ const addWordScene = new Scenes.WizardScene(
             await ctx.reply('Неверный формат. Убедитесь, что слово, варианты и правильный перевод введены с новой строки.');
             return;
         }
-        const word = array[0].trim();
-        const translations = array[1].split(`${SEPARATOR} `).map(s => s.trim());
-        const rightTranslation = array[2].trim();
+        const word = array[0].trim().replace(/^\.+|\.+$/g, ''); // Trim trailing or leading dot
+        const translations = array[1]
+            .split(`${SEPARATOR} `)
+            .map(s => s.trim()) // Trim whitespaces
+            .map(s => s.replace(/^\.+|\.+$/g, '')) // Remove trailing or leading dot
+        const rightTranslation = array[2].trim().replace(/^\.+|\.+$/g, ''); // Trim trailing or leading dot
 
         ctx.wizard.state.word.origin = word;
         
@@ -41,6 +44,8 @@ const addWordScene = new Scenes.WizardScene(
         }
         ctx.wizard.state.word.rightTranslation = rightTranslation;
 
+        log.debug(`Word "${ctx.wizard.state.word.origin}" added to the dataset. Translations: ${translations}. Right translation: ${rightTranslation}`);
+
         try {
             const getWord = await db.getWord(ctx.wizard.state.word.origin);
             const word = getWord.rows[0];
@@ -52,10 +57,10 @@ const addWordScene = new Scenes.WizardScene(
                 await db.saveWord(ctx.wizard.state.word, ctx.from.id);
                 await db.updateUserWordsStats(ctx.from.id);
                 await ctx.reply('Спасибо за добавление слова 💕\n\nИспользуйте команду /add_word для добавления новых слов.');
-                log.info(`Word "${ctx.wizard.state.word.origin}" added to the dataset`);
+                log.info(`Word ${ctx.wizard.state.word.origin} added to the dataset. Translations: ${translations}. Right translation: ${rightTranslation}`);
             }
         } catch (error) {
-            logger.error(error);
+            log.error(error);
             await ctx.reply('Произошла ошибка. Попробуйте ещё раз');
         }
         return ctx.scene.leave();
