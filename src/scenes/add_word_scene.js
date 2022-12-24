@@ -44,13 +44,11 @@ const addWordScene = new Scenes.WizardScene(
         }
         ctx.wizard.state.word.rightTranslation = rightTranslation;
 
-        log.debug(`Word "${ctx.wizard.state.word.origin}" added to the dataset. Translations: ${translations}. Right translation: ${rightTranslation}`);
-
         try {
             const getWord = await db.getWord(ctx.wizard.state.word.origin);
             const word = getWord.rows[0];
             if (word) {
-                log.debug(`User ${ctx.from.id} tried adding word "${word.origin}" that is already exists in the dataset`);
+                log.debug(`User ${ctx.from.id} tried adding word ${word.origin} that is already exists in the dataset`);
                 await ctx.reply(`Слово "${word.origin}" уже есть в нашей базе. Попробуйте добавить другое слово.`);
             } else {
                 analytics.trackWordAdded(ctx.from.id, ctx.wizard.state.word.origin);

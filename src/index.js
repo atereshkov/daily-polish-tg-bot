@@ -3,12 +3,12 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config()
 
+import * as constants from './constants.js';
+import log from './logger/logger.js';
 import chooseLanguageScene from './scenes/choose_language_scene.js';
 import wordQuizScene from './scenes/word_quiz_scene.js';
 import addWordScene from './scenes/add_word_scene.js';
 import userStatsScene from './scenes/user_stats_scene.js';
-import * as constants from './constants.js';
-import log from './logger/logger.js';
 
 let bot;
 
