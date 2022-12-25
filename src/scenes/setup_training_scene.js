@@ -9,12 +9,12 @@ const dailyWordScene = new Scenes.BaseScene(constants.SCENE_ID_SETUP_TRAINING);
 dailyWordScene.enter((ctx) => {
     log.info(`Entered scene ${constants.SCENE_ID_SETUP_TRAINING}`);
     ctx.session.myData = {};
-    const line1 = 'Включите тренировку и получайте случайное слово каждое утро.';
+    const line1 = 'Тренируйте случайное слово каждое утро.';
     const line2 = '🕒 Мы будем отправлять тебе напоминалку в 09:00 (по Польше).';
     const reply = `${line1}\n${line2}`;
     return ctx.reply(reply, Markup.inlineKeyboard([
         Markup.button.callback('Я в деле, включить', "ACTION_ENABLE"),
-        Markup.button.callback('Я сдаюсь, отключить', "ACTION_DISABLE")
+        Markup.button.callback('Сдаюсь, отключить', "ACTION_DISABLE")
     ]));
 });
 
