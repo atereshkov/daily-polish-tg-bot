@@ -37,7 +37,7 @@ async function showNewWord(ctx) {
     for (let i = 0; i < word.translations.length; i++) {
         const id = word.translations[i].id;
         if (word.translations[i].value != null) {
-            buttons.push(Markup.button.callback(`${word.translations[i].value}`, `QUIZ_WORD_ACTION_${id}`));
+            buttons.push([Markup.button.callback(`${word.translations[i].value}`, `QUIZ_WORD_ACTION_${id}`)]);
         }
     }
 

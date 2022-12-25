@@ -1,24 +1,12 @@
 import pg from 'pg';
 
-let pool;
-
-if (process.env.NODE_ENV === "production") {
-    pool = new pg.Pool({
-        user: process.env.PGUSER,
-        host: process.env.PGHOST,
-        database: process.env.PGDATABASE,
-        password: process.env.PGPASSWORD,
-        port: Number(process.env.DATABASE_PORT) || 5432
-    });
-} else {
-    pool = new pg.Pool({
-        user: process.env.PGUSER_TEST,
-        host: process.env.PGHOST_TEST,
-        database: process.env.PGDATABASE_TEST,
-        password: process.env.PGPASSWORD_TEST,
-        port: Number(process.env.DATABASE_PORT_TEST) || 5432
-    });
-}
+const pool = new pg.Pool({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: Number(process.env.DATABASE_PORT) || 5432
+});
 
 // users
 

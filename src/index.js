@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === "production") {
     log.info(`Bootstrap on ${process.env.WEBHOOK_PORT}`);
 } else {
     bot.launch();
-    log.info(`Launched in polling mode (dev?)`);
+    log.info(`Launched in polling mode (${process.env.NODE_ENV})`);
 }
 
 // Enable graceful stop
