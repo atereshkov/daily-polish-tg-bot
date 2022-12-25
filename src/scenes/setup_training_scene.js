@@ -21,14 +21,14 @@ dailyWordScene.enter((ctx) => {
 dailyWordScene.action('ACTION_ENABLE', async (ctx) => {
     log.debug(`Scheduler set up - ACTION_ENABLE`);
     await setUpDailyTraining(ctx, true);
-    analytics.trackTrainingEnabled(tgId);
+    analytics.trackTrainingEnabled(ctx.from.id);
     return ctx.reply('Отлично! Тренировка включена.');
 });
 
 dailyWordScene.action('ACTION_DISABLE', async (ctx) => {
     log.debug(`Scheduler set up - ACTION_DISABLE`);
     await setUpDailyTraining(ctx, false);
-    analytics.trackTrainingDisabled(tgId);
+    analytics.trackTrainingDisabled(ctx.from.id);
     return ctx.reply('Тренировка отключена. Печалька :(');
 });
 
