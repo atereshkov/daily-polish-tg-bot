@@ -59,3 +59,17 @@ export function trackUserStatsShowed(tgId) {
     user_id: `${tgId}`
   });
 }
+
+export function trackTrainingEnabled(tgId) {
+  client.logEvent({
+    event_type: 'User Training Enabled',
+    user_id: `${tgId}`
+  });
+}
+
+export function trackTrainingDisabled(tgId) {
+  client.logEvent({
+    event_type: 'User Training Disabled',
+    user_id: `${tgId}`
+  });
+}

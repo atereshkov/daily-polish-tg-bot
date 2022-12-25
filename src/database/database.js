@@ -107,3 +107,37 @@ export async function saveWord(word, tgId) {
     }
     return await pool.query(query);
 }
+
+// trainings
+
+export async function createTraining(tgId, enabled) {
+    const query = {
+        text: 'INSERT INTO trainings(tg_id, enabled) VALUES($1, $2)',
+        values: [tgId, enabled]
+    }
+    return await pool.query(query);
+}
+
+export async function updateTraining(tgId, enabled) {
+    const query = {
+        text: 'UPDATE trainings SET enabled = $1 WHERE tg_id = $2',
+        values: [enabled, tgId]
+    }
+    return await pool.query(query);
+}
+
+export async function getTraining(tgId) {
+    const query = {
+        text: 'SELECT * FROM trainings WHERE tg_id = $1',
+        values: [tgId]
+    }
+    return await pool.query(query);
+}
+
+export async function getActiveTrainings() {
+    const query = {
+        text: 'SELECT * FROM trainings WHERE enabled = $1',
+        values: [true]
+    }
+    return await pool.query(query);
+}
