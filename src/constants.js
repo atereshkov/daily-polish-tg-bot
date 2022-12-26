@@ -9,3 +9,9 @@ export const SCENE_ID_SETUP_TRAINING = 'SETUP_TRAINING_SCENE_ID';
 
 // Actions
 
+// Quiz Types
+
+export const QuizTypes = {
+    all: "all",
+    my: "my"
+}

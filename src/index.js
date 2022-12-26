@@ -44,8 +44,12 @@ bot.command("language", ctx => {
 
 bot.command('training_settings', (ctx) => ctx.scene.enter(constants.SCENE_ID_SETUP_TRAINING));
 
-bot.command('word', (ctx) => ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ));
-// bot.command('my_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_USER_WORD_QUIZ));
+bot.command("word", ctx => {
+    return ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ, { type: constants.QuizTypes.all });
+});
+bot.command("my_word", ctx => {
+    return ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ, { type: constants.QuizTypes.my });
+});
 bot.command('stats', (ctx) => ctx.scene.enter(constants.SCENE_ID_USER_STATS));
 bot.command('add_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_ADD_WORD));
 

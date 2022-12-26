@@ -6,12 +6,20 @@ import * as db from '../database/database.js';
 import * as analytics from '../analytics/analytics.js';
 import log from '../logger/logger.js';
 
-async function getRandomWord() {
+async function getRandomWord(type, tgId) {
     var word;
     try {
-        const res = await db.getRandomWord();
+        let res;
+        switch (type) {
+            case constants.QuizTypes.all:
+                res = await db.getRandomWord();
+                break;
+            case constants.QuizTypes.my:
+                res = await db.getRandomUserWord(tgId);
+                break;
+        }
         word = res.rows[0];
-        log.debug(`Generate random word ${word.origin}`);
+        log.debug(`Generated random word ${word.origin}, type: ${type} for ${tgId}`);
     } catch (error) {
         log.error(error);
     }
@@ -28,8 +36,8 @@ async function getRandomWord() {
     return new Word(word.id, word.origin, sortedTranslations, word.right_translation);
 }
 
-async function showNewWord(ctx) {
-    const word = await getRandomWord();
+async function showNewWord(ctx, type) {
+    const word = await getRandomWord(type, ctx.from.id);
 
     ctx.session.myData = { word: word };
 
@@ -41,15 +49,16 @@ async function showNewWord(ctx) {
         }
     }
 
-    analytics.trackWordQuizShowed(ctx.from.id, word.origin);
+    analytics.trackWordQuizShowed(ctx.from.id, word.origin, type);
     return ctx.reply(`${word.origin}`, Markup.inlineKeyboard(buttons));
 }
 
 const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
 
 wordQuizScene.enter(async (ctx) => {
-    log.info(`Entered scene ${constants.SCENE_ID_WORD_QUIZ}`);
-    return showNewWord(ctx);
+    const type = ctx.scene.state.type;
+    log.info(`Entered scene ${constants.SCENE_ID_WORD_QUIZ}, type: ${type}`);
+    return showNewWord(ctx, type);
 });
 
 wordQuizScene.action(/QUIZ_WORD_ACTION_+/, async (ctx) => {
@@ -72,15 +81,20 @@ wordQuizScene.action(/QUIZ_WORD_ACTION_+/, async (ctx) => {
     await ctx.editMessageText(answer, {
         parse_mode: "HTML"
     });
-    await ctx.editMessageReplyMarkup({
+    return ctx.editMessageReplyMarkup({
         inline_keyboard: [
-            [Markup.button.callback('Новое слово', "QUIZ_GET_NEW_WORD")],
+            [Markup.button.callback('Новое слово из общего словаря', "QUIZ_GET_NEW_WORD_ALL")],
+            [Markup.button.callback('Новое слово из моего словаря', "QUIZ_GET_NEW_WORD_MY")],
         ]
     });
 });
 
-wordQuizScene.action("QUIZ_GET_NEW_WORD", async (ctx) => {
-    return showNewWord(ctx);
+wordQuizScene.action("QUIZ_GET_NEW_WORD_ALL", async (ctx) => {
+    return showNewWord(ctx, constants.QuizTypes.all);
+});
+
+wordQuizScene.action("QUIZ_GET_NEW_WORD_MY", async (ctx) => {
+    return showNewWord(ctx, constants.QuizTypes.my);
 });
 
 wordQuizScene.command("cancel", async (ctx) => {

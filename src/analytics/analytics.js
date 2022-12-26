@@ -2,12 +2,13 @@ import * as Amplitude from '@amplitude/node';
 
 const client = Amplitude.init(process.env.AMPLITUDE_TOKEN);
 
-export function trackWordQuizShowed(tgId, word) {
+export function trackWordQuizShowed(tgId, word, type) {
   client.logEvent({
     event_type: 'Word Showed',
     user_id: `${tgId}`,
     event_properties: {
-      word: word
+      word: word,
+      type: type
     }
   });
 }
