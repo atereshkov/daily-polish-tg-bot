@@ -11,7 +11,10 @@ const addWordScene = new Scenes.WizardScene(
     constants.SCENE_ID_ADD_WORD,
     async (ctx) => {
         log.info(`Entered scene ${constants.SCENE_ID_ADD_WORD}`);
-        const reply = 'Введите слово, переводы (2-4 шт) и правильный перевод. Слова пишите с большой буквы. Разделите варианты переводов точкой.\n\nПример:\nLotnisko\nАэропорт. Лётчик. Лотерея. Лот\nАэропорт'
+        const firstLine = 'Слово добавляется в твой словарь и в общую базу.';
+        const secondLine = 'Введите слово, переводы (2-4 шт) и правильный перевод. Слова пишите с большой буквы. Разделите варианты переводов точкой.';
+        const example = 'Пример:\nLotnisko\nАэропорт. Лётчик. Лотерея. Лот\nАэропорт';
+        const reply = `${firstLine}\n\n${secondLine}\n\n${example}`;
         await ctx.reply(reply);
         ctx.wizard.state.word = {};
         return ctx.wizard.next();
@@ -20,7 +23,7 @@ const addWordScene = new Scenes.WizardScene(
         log.debug(`Received ${ctx.message.text}`);
         const array = ctx.message.text.split('\n');
         if (array.length < 3) {
-            await ctx.reply('Неверный формат. Убедитесь, что слово, варианты и правильный перевод введены с новой строки.');
+            await ctx.reply('Неверный формат. Убедитесь, что слово, варианты и правильный перевод введены с новой строки. Весь текст нужно отправить заново.');
             return;
         }
         const word = array[0].trim().replace(/^\.+|\.+$/g, ''); // Trim trailing or leading dot
@@ -33,13 +36,13 @@ const addWordScene = new Scenes.WizardScene(
         ctx.wizard.state.word.origin = word;
         
         if (translations.count <= 2 || translations.count > 4) {
-            await ctx.reply('Неверный формат. Переводы нужно разделять точкой. Может быть от 2ух до 4ех вариантов.');
+            await ctx.reply('Неверный формат. Переводы нужно разделять точкой. Может быть от 2ух до 4ех вариантов. Весь текст нужно отправить заново.');
             return;
         }
         ctx.wizard.state.word.translations = translations;
 
         if (!translations.includes(rightTranslation)) {
-            await ctx.reply('Введите правильный перевод слова');
+            await ctx.reply('Введите правильный перевод слова. Весь текст нужно отправить заново.');
             return;
         }
         ctx.wizard.state.word.rightTranslation = rightTranslation;
@@ -66,7 +69,8 @@ const addWordScene = new Scenes.WizardScene(
 );
 
 addWordScene.command("cancel", async (ctx) => {
-    await ctx.reply('Текущая операция закончена.');
+    log.info('Cancelled current command');
+    await ctx.reply('Текущая операция отменена.\nОтправь /help чтобы увидеть список команд.');
     return ctx.scene.leave();
 });
 

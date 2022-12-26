@@ -53,6 +53,20 @@ bot.command("my_word", ctx => {
 bot.command('stats', (ctx) => ctx.scene.enter(constants.SCENE_ID_USER_STATS));
 bot.command('add_word', (ctx) => ctx.scene.enter(constants.SCENE_ID_ADD_WORD));
 
+bot.help((ctx) => {
+    const header = 'Доступные команды:';
+    const word = '/word - Тренировать слова';
+    const myWord = '/my_word - Тренировать слова из моего словаря';
+    const trainingSettings = '/training_settings - Включить / отключить ежедневную тренировку';
+    const addWord = '/add_word - Добавить новое слово';
+    const stats = '/stats - Посмотреть статистику';
+    const cancel = '/cancel - Завершить текущую операцию';
+    const footer1 = 'Присоединяйся к нашему чату в ТГ, где можно пообщаться о польском языке, предложить свою идею для бота или сообщить об ошибке.';
+    const footer2 = 'https://t.me/daily_polish';
+    const reply = `${header}\n\n${word}\n${myWord}\n${trainingSettings}\n${addWord}\n${stats}\n${cancel}\n\n${footer1}\n${footer2}`;
+    return ctx.reply(reply);
+});
+
 if (process.env.NODE_ENV === "production") {
     app.use(express.json());
     app.use(await bot.createWebhook({ domain: process.env.WEBHOOK_URL }));

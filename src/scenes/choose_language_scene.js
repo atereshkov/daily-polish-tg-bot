@@ -36,7 +36,7 @@ chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
 
 chooseLanguageScene.command("cancel", async (ctx) => {
     log.info('Cancelled current command');
-    await ctx.reply('Текущая операция закончена.');
+    await ctx.reply('Текущая операция отменена.\nОтправь /help чтобы увидеть список команд.');
     return ctx.scene.leave();
 });
 
