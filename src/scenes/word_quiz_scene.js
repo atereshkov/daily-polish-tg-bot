@@ -24,6 +24,10 @@ async function getRandomWord(type, tgId) {
         log.error(error);
     }
 
+    if (!word) {
+        throw new Error('Can not find a word in the dataset');;
+    }
+
     var sortedTranslations = [word.translation1, word.translation2, word.translation3, word.translation4]
         .map(value => ({ value, order: Math.random() }))
         .sort((a, b) => a.order - b.order);
@@ -37,7 +41,13 @@ async function getRandomWord(type, tgId) {
 }
 
 async function showNewWord(ctx, type) {
-    const word = await getRandomWord(type, ctx.from.id);
+    let word;
+
+    try {
+        word = await getRandomWord(type, ctx.from.id);
+    } catch (error) {
+        return ctx.reply('Не могу найти слово.. Может быть у тебя пустой словарь?\nПопробуй загрузить из общего словаря или добавь своё командой /add_word.');
+    }
 
     ctx.session.myData = { word: word };
 

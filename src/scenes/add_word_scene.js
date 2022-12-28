@@ -12,7 +12,7 @@ const addWordScene = new Scenes.WizardScene(
     async (ctx) => {
         log.info(`Entered scene ${constants.SCENE_ID_ADD_WORD}`);
         const firstLine = 'Слово добавляется в твой словарь и в общую базу.';
-        const secondLine = 'Введите слово, переводы (2-4 шт) и правильный перевод. Слова пишите с большой буквы. Разделите варианты переводов точкой.';
+        const secondLine = 'Введи слово, переводы (2-4 шт) и правильный перевод. Слова пиши с большой буквы. Раздели варианты переводов точкой. Отправь всё в одном сообщении, как в примере.';
         const example = 'Пример:\nLotnisko\nАэропорт. Лётчик. Лотерея. Лот\nАэропорт';
         const reply = `${firstLine}\n\n${secondLine}\n\n${example}`;
         await ctx.reply(reply);
@@ -23,7 +23,7 @@ const addWordScene = new Scenes.WizardScene(
         log.debug(`Received ${ctx.message.text}`);
         const array = ctx.message.text.split('\n');
         if (array.length < 3) {
-            await ctx.reply('Неверный формат. Убедитесь, что слово, варианты и правильный перевод введены с новой строки. Весь текст нужно отправить заново.');
+            await ctx.reply('Неверный формат. Слово, переводы и правильный перевод должен быть с новой строки. Весь текст нужно отправить заново.');
             return;
         }
         const word = array[0].trim().replace(/^\.+|\.+$/g, ''); // Trim trailing or leading dot
@@ -42,7 +42,7 @@ const addWordScene = new Scenes.WizardScene(
         ctx.wizard.state.word.translations = translations;
 
         if (!translations.includes(rightTranslation)) {
-            await ctx.reply('Введите правильный перевод слова. Весь текст нужно отправить заново.');
+            await ctx.reply('Введи правильный перевод слова. Весь текст нужно отправить заново.');
             return;
         }
         ctx.wizard.state.word.rightTranslation = rightTranslation;
@@ -52,12 +52,12 @@ const addWordScene = new Scenes.WizardScene(
             const word = getWord.rows[0];
             if (word) {
                 log.debug(`User ${ctx.from.id} tried adding word ${word.origin} that is already exists in the dataset`);
-                await ctx.reply(`Слово "${word.origin}" уже есть в нашей базе. Попробуйте добавить другое слово.`);
+                await ctx.reply(`Слово "${word.origin}" уже есть в нашей базе. Попробуйте добавить другое слово.\n\n/add_word - команда для добавления новых слов.`);
             } else {
                 analytics.trackWordAdded(ctx.from.id, ctx.wizard.state.word.origin);
                 await db.saveWord(ctx.wizard.state.word, ctx.from.id);
                 await db.updateUserWordsStats(ctx.from.id);
-                await ctx.reply('Спасибо за добавление слова 💕\n\nИспользуйте команду /add_word для добавления новых слов.');
+                await ctx.reply('Спасибо за добавление слова 💕\n\nИспользуй команду /add_word для добавления новых слов.');
                 log.info(`Word ${ctx.wizard.state.word.origin} added to the dataset. Translations: ${translations}. Right translation: ${rightTranslation}`);
             }
         } catch (error) {

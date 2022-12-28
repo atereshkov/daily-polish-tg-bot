@@ -23,12 +23,12 @@ chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
     log.debug(`Language action ${ctx.match.input}, direct: ${ctx.scene.state.direct_command}`);
     let languageCode = ctx.match.input.substring("ACTION_LANGUAGE_".length);
     await ctx.editMessageReplyMarkup();
-    await ctx.editMessageText(`Ok, ${languageCode}. Noted. Great!`);
+    await ctx.editMessageText(`Понял, принял. Отлично!`);
     await setLanguage(ctx.from.id, languageCode);
     if (ctx.scene.state.direct_command == true) {
         return ctx.scene.leave();
     } else {
-        return ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ);
+        return ctx.scene.enter(constants.SCENE_ID_WORD_QUIZ, { type: constants.QuizTypes.all });
     }
 });
 
