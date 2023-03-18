@@ -7,7 +7,7 @@ import log from '../logger/logger.js';
 const dailyWordScene = new Scenes.BaseScene(constants.SCENE_ID_SETUP_TRAINING);
 
 dailyWordScene.enter((ctx) => {
-    log.info(`Entered scene ${constants.SCENE_ID_SETUP_TRAINING}`);
+    log.debug(`Entered scene ${constants.SCENE_ID_SETUP_TRAINING}`);
     ctx.session.myData = {};
     const line1 = 'Тренируйте случайное слово каждое утро.';
     const line2 = '🕒 Мы будем отправлять тебе напоминалку в 09:00 (по Польше).';
@@ -33,7 +33,7 @@ dailyWordScene.action('ACTION_DISABLE', async (ctx) => {
 });
 
 dailyWordScene.command("cancel", async (ctx) => {
-    log.info('Cancelled current command');
+    log.debug('Cancelled current command');
     await ctx.reply('Текущая операция отменена.\nОтправь /help чтобы увидеть список команд.');
     return ctx.scene.leave();
 });
@@ -48,10 +48,10 @@ async function setUpDailyTraining(ctx, enabled) {
             const training = getTraining.rows[0];
             if (training) {
                 await db.updateTraining(tgId, enabled);
-                log.info(`Update training ${tgId}, enabled: ${enabled}`);
+                log.debug(`Update training ${tgId}, enabled: ${enabled}`);
             } else {
                 await db.createTraining(tgId, enabled);
-                log.info(`Create training ${tgId}, enabled: ${enabled}`);
+                log.debug(`Create training ${tgId}, enabled: ${enabled}`);
             }
         } catch (error) {
             log.error(error);

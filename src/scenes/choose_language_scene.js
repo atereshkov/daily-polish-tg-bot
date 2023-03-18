@@ -7,7 +7,7 @@ import log from '../logger/logger.js';
 const chooseLanguageScene = new Scenes.BaseScene(constants.SCENE_ID_CHOOSE_LANGUAGE);
 
 chooseLanguageScene.enter((ctx) => {
-    log.info(`Entered scene ${constants.SCENE_ID_CHOOSE_LANGUAGE}`);
+    log.debug(`Entered scene ${constants.SCENE_ID_CHOOSE_LANGUAGE}`);
     ctx.session.myData = {};
     // const msgRu = 'Learn Polish from Russian or English. You could change it anytime.';
     // const msgEn = 'Учи польский с Русского и Английского. Можешь изменить свой выбор позже.';
@@ -35,7 +35,7 @@ chooseLanguageScene.action(/ACTION_LANGUAGE_+/, async (ctx) => {
 // chooseLanguageScene.use((ctx) => ctx.replyWithMarkdownV2('Пожалуйста, выберите язык'));
 
 chooseLanguageScene.command("cancel", async (ctx) => {
-    log.info('Cancelled current command');
+    log.debug('Cancelled current command');
     await ctx.reply('Текущая операция отменена.\nОтправь /help чтобы увидеть список команд.');
     return ctx.scene.leave();
 });
@@ -47,7 +47,7 @@ async function setLanguage(tgId, languageCode) {
         try {
             await db.updateUserLanguage(tgId, languageCode);
             analytics.trackLanguageSelected(tgId, languageCode);
-            log.info(`Update user language ${tgId}, value: ${languageCode}`);
+            log.debug(`Update user language ${tgId}, value: ${languageCode}`);
         } catch (error) {
             log.error(error);
         }
@@ -56,10 +56,10 @@ async function setLanguage(tgId, languageCode) {
             const getUserStats = await db.getUserStats(tgId);
             const userStats = getUserStats.rows[0];
             if (!userStats) {
-                log.info(`Creating user stats for ${tgId}`);
+                log.debug(`Creating user stats for ${tgId}`);
                 await db.createUserStats(tgId);
             }
-            log.info(`Creating user ${tgId}`);
+            log.debug(`Creating user ${tgId}`);
             await db.createUser(tgId, languageCode);
             analytics.trackUserCreated(tgId, languageCode);
             log.info(`User created ${tgId}, language: ${languageCode}`);

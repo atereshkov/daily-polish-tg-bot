@@ -50,8 +50,8 @@ async function sendNewWordJob(jobId, bot) {
         const line1 = messages[Math.floor(Math.random() * messages.length)];
         const line2 = 'Готов? Выбирай тренировку:'; // TODO /training
         const line3 = '/word - квиз с вариантами ответа';
-        const line4 = '/write - хардкор, переводу нужно написать самому';
-        const message = `${line1}\n\n${line2}\n${line3}\n${line4}`;
+        // const line4 = '/write - хардкор, переводу нужно написать самому';
+        const message = `${line1}\n\n${line2}\n${line3}`;
         bot.telegram.sendMessage(tgId, message);
         log.debug(`Sending message to ${tgId} from scheduler`);
     }

@@ -67,7 +67,7 @@ const wordQuizScene = new Scenes.BaseScene(constants.SCENE_ID_WORD_QUIZ);
 
 wordQuizScene.enter(async (ctx) => {
     const type = ctx.scene.state.type;
-    log.info(`Entered scene ${constants.SCENE_ID_WORD_QUIZ}, type: ${type}`);
+    log.debug(`Entered scene ${constants.SCENE_ID_WORD_QUIZ}, type: ${type}`);
     return showNewWord(ctx, type);
 });
 
@@ -108,7 +108,7 @@ wordQuizScene.action("QUIZ_GET_NEW_WORD_MY", async (ctx) => {
 });
 
 wordQuizScene.command("cancel", async (ctx) => {
-    log.info('Cancelled current command');
+    log.debug('Cancelled current command');
     await ctx.reply('Текущая операция отменена.\nОтправь /help чтобы увидеть список команд.');
     return ctx.scene.leave();
 });

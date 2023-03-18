@@ -7,7 +7,7 @@ import log from '../logger/logger.js';
 const userStatsScene = new Scenes.BaseScene(constants.SCENE_ID_USER_STATS);
 
 userStatsScene.enter(async (ctx) => {
-    log.info(`Entered scene ${constants.SCENE_ID_USER_STATS}`);
+    log.debug(`Entered scene ${constants.SCENE_ID_USER_STATS}`);
     analytics.trackUserStatsShowed(ctx.from.id);
 
     const getUserStats = await db.getUserStats(ctx.from.id);

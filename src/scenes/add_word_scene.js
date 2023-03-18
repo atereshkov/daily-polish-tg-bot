@@ -10,7 +10,7 @@ const SEPARATOR = '.'
 const addWordScene = new Scenes.WizardScene(
     constants.SCENE_ID_ADD_WORD,
     async (ctx) => {
-        log.info(`Entered scene ${constants.SCENE_ID_ADD_WORD}`);
+        log.debug(`Entered scene ${constants.SCENE_ID_ADD_WORD}`);
         const firstLine = 'Слово добавляется в твой словарь и в общую базу.';
         const secondLine = 'Введи слово, переводы (2-4 шт) и правильный перевод. Слова пиши с большой буквы. Раздели варианты переводов точкой. Отправь всё в одном сообщении, как в примере.';
         const example = 'Пример:\nLotnisko\nАэропорт. Лётчик. Лотерея. Лот\nАэропорт';
@@ -69,7 +69,7 @@ const addWordScene = new Scenes.WizardScene(
 );
 
 addWordScene.command("cancel", async (ctx) => {
-    log.info('Cancelled current command');
+    log.debug('Cancelled current command');
     await ctx.reply('Текущая операция отменена.\nОтправь /help чтобы увидеть список команд.');
     return ctx.scene.leave();
 });
