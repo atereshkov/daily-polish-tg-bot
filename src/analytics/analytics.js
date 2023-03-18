@@ -1,5 +1,8 @@
 import * as Amplitude from '@amplitude/node';
 
+import * as dotenv from 'dotenv';
+dotenv.config()
+
 const client = Amplitude.init(process.env.AMPLITUDE_TOKEN);
 
 export function trackWordQuizShowed(tgId, word, type) {
