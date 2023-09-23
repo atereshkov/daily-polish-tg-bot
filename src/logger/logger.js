@@ -23,7 +23,6 @@ const logger = createLogger({
             unique: true
         })
     ],
-
 });
 
 export default logger;
