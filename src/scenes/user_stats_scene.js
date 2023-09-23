@@ -19,7 +19,7 @@ userStatsScene.enter(async (ctx) => {
     }
 
     const answers = `✅ Правильных ответов: ${stats.right_answers}\n❌ Неверных ответов: ${stats.wrong_answers}`;
-    const words = `📙 Всего слов добавлено: ${stats.words_added}`;
+    const words = `📙 Всего добавлено слов: ${stats.words_added}`;
     const message = answers + '\n\n' + words;
     return ctx.reply(message);
 });
